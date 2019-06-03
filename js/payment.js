@@ -61,7 +61,7 @@ window.addEventListener('load', async () => {
   paymentsLength = await callStatic('getPaymentsLength', []);
 
   for (let i = 1; i <= paymentsLength; i++) {
-    const payment = await callStatic('getpayments', [i]);
+    const payment = await callStatic('getPayments', [i]);
     paymentArray.push({
       name: payment.name,
       matric: payment.matric,
