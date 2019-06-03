@@ -77,7 +77,7 @@ window.addEventListener('load', async () => {
     })
   }
 
-  renderpayments();
+  renderPayments();
 
   $("#loader").hide();
 });
