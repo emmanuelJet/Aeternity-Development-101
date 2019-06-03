@@ -19,14 +19,14 @@ const contractSource = `
       let payment = { studentAddress = Call.caller, schoolAddress = Call.origin, name = name', matric = matric', payType = payType', amount = amount'}
       let index = getPaymentsLength() + 1
       Chain.spend(payment.schoolAddress, Call.value)
-      "put(state{ payments[index] = payment, paymentsLength = index })"
+      put(state{ payments[index] = payment, paymentsLength = index })
     public function getPayments(index : int) : payment =
       switch(Map.lookup(index, state.payments))
         None    => abort("There was no payment with this index registered.")
         Some(x) => x
 `;
 
-const contractAddress = 'ct_cDvJebib46QdG6GxEmAW4J7DDHSvWcYD5SAwuai6P8r35e5Gy';
+const contractAddress = 'ct_7d9P3Ss6d8Z2F3kk87bB4oGH8K3EvFUH7YbFdRFPLz5hUQ1jT';
 var client = null;
 var paymentArray = [];
 var paymentsLength = 0;
