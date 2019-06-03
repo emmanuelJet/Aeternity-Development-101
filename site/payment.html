@@ -180,6 +180,7 @@
                 <table class="table">
                   <thead>
                     <tr>
+                      <th>S/N</th>
                       <th>Name</th>
                       <th>Matric No</th>
                       <th>Payment For</th>
@@ -193,6 +194,7 @@
                 <script id="paymentJs" type="x-tmpl-mustache">
                   {{#paymentArray}}
                     <tr>
+                      <td>{{ index }}</td>
                       <td>{{ name }}</td>
                       <td>{{ matric }}</td>
                       <td>{{ payType }}</td>
@@ -217,8 +219,9 @@
     </div>
     <script src="../js/payment.js"></script>
     <script src="../js/jquery.js"></script>
-    <script src="../js/mustache.js"></script>
-    <script src="../js/aepp-sdk.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/dacadeorg/aeternity-development-101/resources/aepp-sdk.browser.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js"></script>
     <script src="../js/yii.js"></script>
     <script src="../js/js/respond.min.js"></script>
     <script src="../js/js/bootstrap.min.js"></script>
