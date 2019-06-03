@@ -225,6 +225,20 @@ body > section {
   margin-bottom: 0;
 }
 
+#message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  z-index: 1;
+}
+
+#loader {
+  margin: 1em;
+  color:#911f0e;
+  display: none;
+}
+
 @-webkit-keyframes scaleIn {
   0% {
     opacity: 0;
