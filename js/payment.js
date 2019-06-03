@@ -1,75 +1,99 @@
+const contractSource = `
+  contract EksuPayment =
+    record payment =
+      { studentAddress : address,
+        schoolAddress  : address,
+        name           : string,
+        matric         : int,
+        payType        : string,
+        amount         : int }
+    record state =
+      { payments      : map(int, payment),
+        paymentsLength : int }
+    function init() =
+      { payments = {},
+        paymentsLength = 0 }
+    public function getPaymentsLength() : int =
+      state.paymentsLength
+    public stateful function makePayment(name' : string, matric' : int, payType' : string, amount' : int) =
+      let payment = { studentAddress = Call.caller, schoolAddress = Call.origin, name = name', matric = matric', payType = payType', amount = amount'}
+      let index = getPaymentsLength() + 1
+      Chain.spend(payment.schoolAddress, Call.value)
+      put(state{ payments[index] = payment, paymentsLength = index }
+    public function getPayments(index : int) : payment =
+      switch(Map.lookup(index, state.payments))
+        None    => abort("There was no payment with this index registered.")
+        Some(x) => x
+`;
+
 const contractAddress = 'ct_2f2D7S9rB3p9db2KTAGBC1vuL9DBWWzANLLgwdQtSKCuGoq7HJ';
 var client = null;
 var paymentArray = [];
 var paymentsLength = 0;
 
-
 function renderPayments() {
-  var paymentJs = $('#paymentJs').html();
+  let paymentJs = $('#paymentJs').html();
   Mustache.parse(paymentJs);
-  var rendered = Mustache.render(paymentJs, {paymentArray});
+  let rendered = Mustache.render(paymentJs, {paymentArray});
   $('#paymentList').html(rendered);
 }
 
-async function callStatic(func, args, types) {
-  const calledGet = await client.contractCallStatic(contractAddress,
-  'sophia-address', func, {args}).catch(e => console.error(e));
-
-  const decodedGet = await client.contractDecodeData(types,
-  calledGet.result.returnValue).catch(e => console.error(e));
+async function callStatic(func, args) {
+  const contract = await client.getContractInstance(contractSource, {contractAddress});
+  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
+  const decodedGet = await calledGet.decode().catch(e => console.error(e));
 
   return decodedGet;
 }
 
-async function contractCall(func, args, value, types) {
-  const calledSet = await client.contractCall(contractAddress, 'sophia-address',
-  contractAddress, func, {args, options: {amount:value}}).catch(async e => {
-    const decodedError = await client.contractDecodeData(types,
-    e.returnValue).catch(e => console.error(e));
-  });
+async function contractCall(func, args, value) {
+  const contract = await client.getContractInstance(contractSource, {contractAddress});
+  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
 
-  return
+  return calledSet;
 }
 
 window.addEventListener('load', async () => {
-  $('#loader').show();
+  $("#loader").show();
 
   client = await Ae.Aepp();
 
-  const getPaymentsLength = await callStatic('getPaymentsLength','()','int');
-  paymentsLength = getPaymentsLength.value;
+  paymentsLength = await callStatic('getPaymentsLength', []);
 
   for (let i = 1; i <= paymentsLength; i++) {
-    const payment = await callStatic('getPayment',`(${i})`,'(address, address, string, int, string, int)');
-
+    const payment = await callStatic('getpayment', [i]);
     paymentArray.push({
-      name: payment.value[2].value,
-      matric: payment.value[3].value,
-      payType: payment.value[4].value,
-      amount: payment.value[5].value,
+      name: payment.name,
+      matric: payment.matric,
+      payType: payment.payType,
+      amount: payment.amount,
       index: i,
     })
   }
 
-  renderPayments();
+  renderpayments();
 
-  $('#loader').hide();
+  $("#loader").hide();
 });
 
 $('#registerBtn').click(async function(){
-  const name = ($('#paymentName').val()),
-      matric = ($('#paymentMatric').val()),
-      paymentType = ($('#paymentType').val()),
-      amount = ($('#paymentAmount').val());
+  $("#loader").show();
 
-  await contractCall('makePayment',`("${name}","${matric}","${paymentType}","${amount}")`,`("${amount}")`,'(int)');
+  const name = ($('#paymentName').val()),
+        matric = ($('#paymentMatric').val()),
+        payType = ($('#payType').val()),
+        amount = ($('#paymentAmount').val());
+
+  await contractCall('makePayment', [name, matric, payType, amount], amount);
 
   paymentArray.push({
     name: name,
     matric: matric,
-    paymentType: paymentType,
+    payType: payType,
     amount: amount,
     index: paymentArray.length + 1,
   })
+
   renderPayments();
+  $("#loader").hide();
 });
