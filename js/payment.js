@@ -1,5 +1,6 @@
 const contractSource = `
   contract EksuPayment =
+
     record payment =
       { studentAddress : address,
         schoolAddress  : address,
@@ -7,26 +8,31 @@ const contractSource = `
         matric         : int,
         payType        : string,
         amount         : int }
+    
     record state =
       { payments      : map(int, payment),
         paymentsLength : int }
+    
     function init() =
       { payments = {},
         paymentsLength = 0 }
+    
     public function getPaymentsLength() : int =
       state.paymentsLength
+    
     public stateful function makePayment(name' : string, matric' : int, payType' : string, amount' : int) =
       let payment = { studentAddress = Call.caller, schoolAddress = Call.origin, name = name', matric = matric', payType = payType', amount = amount'}
       let index = getPaymentsLength() + 1
       Chain.spend(payment.schoolAddress, Call.value)
       put(state{ payments[index] = payment, paymentsLength = index })
+    
     public function getPayments(index : int) : payment =
       switch(Map.lookup(index, state.payments))
         None    => abort("There was no payment with this index registered.")
         Some(x) => x
 `;
 
-const contractAddress = 'ct_7d9P3Ss6d8Z2F3kk87bB4oGH8K3EvFUH7YbFdRFPLz5hUQ1jT';
+const contractAddress = 'ct_AaLYRT3jtvLJ1cksFvaRsdPVYdfvK61DiWQ1eXpwutRwvpATW';
 var client = null;
 var paymentArray = [];
 var paymentsLength = 0;
