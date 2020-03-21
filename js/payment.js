@@ -1,6 +1,6 @@
-var paymentArray = [];
+let paymentArray = [];
 
-const client = null, contractInstance = null;
+let client = null, contractInstance = null;
 const contractAddress = 'ct_2C7qjNqw634pMGpyuLkN4Lf8ZtUVRMssh9Uiq5tLEctgmD65dB';
 
 const contractSource = `
