@@ -51,15 +51,16 @@ window.addEventListener('load', async function() {
   contractInstance = await client.getContractInstance(contractSource,{contractAddress});
 
   let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
-  allPayments=map(payment=>{
-    console.log(payment)
-    // paymentArray.push({
-    //   name: payment.name,
-    //   matric: payment.matric,
-    //   payType: payment.payType,
-    //   amount: payment.amount,
-    // })
-  });
+  console.log('Payment: ', allPayments)
+  // allPayments=map(payment=>{
+  //   console.log(payment)
+  //   // paymentArray.push({
+  //   //   name: payment.name,
+  //   //   matric: payment.matric,
+  //   //   payType: payment.payType,
+  //   //   amount: payment.amount,
+  //   // })
+  // });
 
   renderPayments();
 
