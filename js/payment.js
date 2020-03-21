@@ -44,7 +44,7 @@ function renderPayments() {
   $('#paymentList').html(rendered);
 }
 
-window.addEventListener('load', async () => {
+window.addEventListener('load', async function() {
   $("#loader").show();
 
   client = await Ae.Aepp();
