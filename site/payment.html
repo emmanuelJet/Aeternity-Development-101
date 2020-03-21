@@ -142,18 +142,17 @@
                 <div class="col-md-6">
                   <blockquote >
                     <div class="form-group">
-                      <label class="control-label" for="name">Full Name</label>
-                      <input type="name" id="paymentName" class="form-control" name="name" placeholder="Full Name" required>
+                      <label class="control-label" for="paymentName">Full Name</label>
+                      <input type="text" id="paymentName" class="form-control" placeholder="Full Name" required>
                     </div>    
                     <div class="form-group">
-                      <label class="control-label" for="matric">Matric No</label>
-                      <input type="number" id="paymentMatric" class="form-control" name="matric" placeholder="Matric Number" required>
+                      <label class="control-label" for="paymentMatric">Matric No</label>
+                      <input type="number" id="paymentMatric" class="form-control" placeholder="Matric Number" required>
                     </div>
                     <div class="form-group">
-                      <label class="control-label" for="payment">Payment For</label>
-                      <input type="text" id="payType" class="form-control" name="payType" placeholder="Payment For?" required>
-                      <!-- <select class="form-control" name="payment" id="paymentType" required>
-                        <option class="hidden" selected disabled>Please Select Payment Type *</option>
+                      <label class="control-label" for="payType">Payment For</label>
+                      <select class="form-control" id="payType" required>
+                        <option disabled>Please Select Payment Type *</option>
                         <option value="Application Fees">Application Fees</option>
                         <option value="Acceptance Fees">Acceptance Fees</option>
                         <option value="Portal Fees">Portal Fees</option>
@@ -169,11 +168,11 @@
                         <option value="Alumni Fees">Alumni Fees</option>
                         <option value="ompendium Fees">ompendium Fees</option>
                         <option value="Convocation Fees">Convocation Fees</option>
-                      </select> -->
+                      </select>
                     </div>
                     <div class="form-group">
-                      <label class="control-label" for="amount">Amount</label>
-                      <input type="number" name="amount" id="paymentAmount" class="form-control" placeholder="Amount In AE *" required/>
+                      <label class="control-label" for="paymentAmount">Amount</label>
+                      <input type="number" id="paymentAmount" class="form-control" placeholder="Amount In AE *" required/>
                     </div>
                     <div class="form-group">
                       <button type="submit" id="registerBtn" class="btn btn-primary">Pay</button>
@@ -222,7 +221,7 @@
       </div>
     </div>
     <script src="../js/jquery.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/dacadeorg/aeternity-development-101/resources/aepp-sdk.browser.js"></script>
+    <script src="https://unpkg.com/@aeternity/aepp-sdk@6.1.2/dist/aepp-sdk.browser-script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js"></script>
     <script src="../js/payment.js"></script>
     <script src="../js/yii.js"></script>

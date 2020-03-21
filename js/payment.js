@@ -1,41 +1,41 @@
-const contractSource = `
-  contract EksuPayment =
-
-    record payment =
-      { studentAddress : address,
-        schoolAddress  : address,
-        name           : string,
-        matric         : int,
-        payType        : string,
-        amount         : int }
-    
-    record state =
-      { payments      : map(int, payment),
-        paymentsLength : int }
-    
-    function init() =
-      { payments = {},
-        paymentsLength = 0 }
-    
-    public function getPaymentsLength() : int =
-      state.paymentsLength
-    
-    public stateful function makePayment(name' : string, matric' : int, payType' : string, amount' : int) =
-      let payment = { studentAddress = Call.caller, schoolAddress = Call.origin, name = name', matric = matric', payType = payType', amount = amount'}
-      let index = getPaymentsLength() + 1
-      Chain.spend(payment.schoolAddress, Call.value)
-      put(state{ payments[index] = payment, paymentsLength = index })
-    
-    public function getPayments(index : int) : payment =
-      switch(Map.lookup(index, state.payments))
-        None    => abort("There was no payment with this index registered.")
-        Some(x) => x
-`;
-
-const contractAddress = 'ct_AaLYRT3jtvLJ1cksFvaRsdPVYdfvK61DiWQ1eXpwutRwvpATW';
-var client = null;
 var paymentArray = [];
-var paymentsLength = 0;
+
+const client = null, contractInstance = null;
+const contractAddress = 'ct_2C7qjNqw634pMGpyuLkN4Lf8ZtUVRMssh9Uiq5tLEctgmD65dB';
+
+const contractSource = `
+payable contract EKSUPayment =
+
+record payment =
+  { studentAddress : address,
+    name           : string,
+    matric         : int,
+    payType        : string,
+    amount         : int }
+
+record state =
+  { payments       : map(address, list(payment)),
+    schoolAddress  : address }
+
+entrypoint init() =
+  { payments = {},
+    schoolAddress = ak_rLoCtHE3NK9dKyCNonJFYWkEEfeAsDUWa887GsCKqV1rhSuT6 }
+
+payable stateful entrypoint makePayment(name' : string, matric' : int, payType' : string, amount' : int) =
+  let payment = {studentAddress = Call.caller, name = name', matric = matric', payType = payType', amount = amount'}
+  Chain.spend(state.schoolAddress, Call.value)
+
+  let paymentList = Map.lookup_default(Call.caller, state.payments, [])
+  let newPaymentList = payment::paymentList
+
+  put(state{payments[Call.caller] = newPaymentList})
+
+entrypoint userPayment() =
+  state.payments[Call.caller]  
+
+entrypoint getPayment() =
+  state.payments
+`;
 
 function renderPayments() {
   let paymentJs = $('#paymentJs').html();
@@ -44,38 +44,21 @@ function renderPayments() {
   $('#paymentList').html(rendered);
 }
 
-async function callStatic(func, args) {
-  const contract = await client.getContractInstance(contractSource, {contractAddress});
-  const calledGet = await contract.call(func, args, {callStatic: true}).catch(e => console.error(e));
-  const decodedGet = await calledGet.decode().catch(e => console.error(e));
-
-  return decodedGet;
-}
-
-async function contractCall(func, args, value) {
-  const contract = await client.getContractInstance(contractSource, {contractAddress});
-  const calledSet = await contract.call(func, args, {amount: value}).catch(e => console.error(e));
-
-  return calledSet;
-}
-
 window.addEventListener('load', async () => {
   $("#loader").show();
 
   client = await Ae.Aepp();
+  contractInstance = await client.getContractInstamce(contractSource,{contractAddress});
 
-  paymentsLength = await callStatic('getPaymentsLength', []);
-
-  for (let i = 1; i <= paymentsLength; i++) {
-    const payment = await callStatic('getPayments', [i]);
+  let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
+  allPayments=map(payment=>{
     paymentArray.push({
       name: payment.name,
       matric: payment.matric,
       payType: payment.payType,
       amount: payment.amount,
-      index: i,
     })
-  }
+  });
 
   renderPayments();
 
@@ -88,18 +71,18 @@ $('#registerBtn').click(async function(){
   const name = ($('#paymentName').val()),
         matric = ($('#paymentMatric').val()),
         payType = ($('#payType').val()),
-        amount = ($('#paymentAmount').val());
+        amount = ($('#paymentAmount').val()),
+        cryptoAmount = amount * 1000000000000000000;
 
-  await contractCall('makePayment', [name, matric, payType, amount], amount);
+  await contractInstance.methods.makePayment(name, matric, payType, amount,{cryptoAmount});
 
   paymentArray.push({
     name: name,
     matric: matric,
     payType: payType,
     amount: amount,
-    index: paymentArray.length + 1,
   })
 
   renderPayments();
   $("#loader").hide();
-});
+})
