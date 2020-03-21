@@ -90,14 +90,18 @@ window.addEventListener('load', async () => {
   //   allPayments(payment.name, payment.matric, payment.payType, payment.amount)
   // });
 
-  let myPay=(await contractInstance.methods.userPayment()).decodedResult;
-  myPay=map(payment=>{
-    myPayment(payment.payType, payment.amount)
-  });
-
-  renderPayments();
-
-  $("#loader").hide();
+  contractInstance.methods.userPayment()
+  .then(function (result) {
+    let myPay= result.decodedResult;
+    myPay=map(payment=>{
+      myPayment(payment.payType, payment.amount)
+      $("#loader").hide();
+    });
+  })
+  .catch(function (error) {
+    console.error('Error', error)
+    $("#loader").hide();
+  })
 });
 
 $('#registerBtn').click(async function(){
