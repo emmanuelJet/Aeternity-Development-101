@@ -99,29 +99,26 @@ window.addEventListener('load', async () => {
     });
   })
   .catch(function (error) {
-    console.error('Error', error)
+    console.error(error.decodedError)
     $("#loader").hide();
   })
 });
 
-$('#registerBtn').click(async function(){
-  $("#loader").show();
+async function makePayment(event){
+  event.preventDefault();
 
-  const name = ($('#paymentName').val()),
-        matric = ($('#paymentMatric').val()),
-        payType = ($('#payType').val()),
-        amount = ($('#paymentAmount').val()),
-        cryptoAmount = amount * 1000000000000000000;
+  let name = document.getElementById("paymentName").value;
+  let matric = document.getElementById("paymentMatric").value;
+  let payType = document.getElementById("payType").value;
+  let amount = document.getElementById("paymentAmount").value;
+  let cryptoAmount = amount * 1000000000000000000;
 
-  await contractInstance.methods.makePayment(name, matric, payType, amount,{cryptoAmount});
+  if(name.trim()!=""&&matric.trim()!=""&&payType.trim()!=""&&amount.trim()!=""){
+    $("#loader").show();
+    await contractInstance.methods.makePayment(name, matric, payType, amount,{cryptoAmount});
+    myPayment(payType, amount);
+    $("#loader").hide();
+  }
+}
 
-  paymentArray.push({
-    name: name,
-    matric: matric,
-    payType: payType,
-    amount: amount,
-  })
-
-  renderPayments();
-  $("#loader").hide();
-})
+document.getElementById("registerBtn").addEventListener("click",makePayment);
