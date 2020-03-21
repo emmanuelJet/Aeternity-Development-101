@@ -85,10 +85,18 @@ window.addEventListener('load', async () => {
   client = await Ae.Aepp();
   contractInstance = await client.getContractInstance(contractSource,{contractAddress});
 
-  // let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
-  // allPayments=map(payment=>{
-  //   allPayments(payment.name, payment.matric, payment.payType, payment.amount)
-  // });
+  contractInstance.methods.getPayment()
+  .then(function (result) {
+    let allPayments= result.decodedResult;
+    allPayments=map(payment=>{
+      allPayments(payment.name, payment.matric, payment.payType, payment.amount)
+    });
+  })
+  .catch(function (error) {
+    console.error('Error: ', error.decodedError)
+    document.getElementById("myPayment").innerText = "No Transaction made"
+    $("#loader").hide();
+  })
 
   contractInstance.methods.userPayment()
   .then(function (result) {
@@ -99,7 +107,8 @@ window.addEventListener('load', async () => {
     });
   })
   .catch(function (error) {
-    console.error(error.decodedError)
+    console.error('Error: ', error.decodedError)
+    document.getElementById("myPayment").innerText = "No Transaction made"
     $("#loader").hide();
   })
 });
