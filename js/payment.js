@@ -37,31 +37,6 @@ payable contract EKSUPayment =
     state.payments
 `;
 
-function allPayments(name, matric, type, amount){
-  let allPayments=document.getElementById("paymentList");
-
-  let paymentList = document.createElement('tr');
-
-  let nameText=document.createElement("td");
-  nameText.innerText=name;
-
-  let matricText=document.createElement("td");
-  matricText.innerText=matric;
-  
-  let typeText=document.createElement("td");
-  typeText.innerText=type;
-
-  let amountText=document.createElement("td");
-  amountText.innerHTML=amount + "æ";
-
-  paymentList.appendChild(nameText);
-  paymentList.appendChild(matricText);
-  paymentList.appendChild(typeText);
-  paymentList.appendChild(amountText);;
-
-  allPayments.appendChild(paymentList);
-}
-
 function myPayment(type, amount){
   let myPayment=document.getElementById("myPayment");
 
@@ -85,20 +60,6 @@ window.addEventListener('load', async () => {
   client = await Ae.Aepp();
   contractInstance = await client.getContractInstance(contractSource,{contractAddress});
 
-  contractInstance.methods.getPayment()
-  .then(function (result) {
-    let allPayments= result.decodedResult[1][1];
-    console.log(allPayments)
-    allPayments=map(payment=>{
-      allPayments(payment.name, payment.matric, payment.payType, payment.amount)
-    });
-  })
-  .catch(function (error) {
-    console.error(error.decodedError)
-    document.getElementById("paymentList").innerText = "No Transaction made"
-    $("#loader").hide();
-  })
-
   contractInstance.methods.userPayment()
   .then(function (result) {
     let myPay= result.decodedResult;
@@ -109,7 +70,7 @@ window.addEventListener('load', async () => {
   })
   .catch(function (error) {
     console.error(error.decodedError)
-    document.getElementById("myPayment").innerText = "You have not made a payment"
+    document.getElementById("myPayment").innerText = "No Payment"
     $("#loader").hide();
   })
 });
