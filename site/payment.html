@@ -185,26 +185,16 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Matric No</th>
+                      <!-- <th>Name</th>
+                      <th>Matric No</th> -->
                       <th>Payment For</th>
                       <th>Amount</th>
                     </tr>
                   </thead>
-                  <tbody id="paymentList">
+                  <tbody id="myPayment">
                     
                   </tbody>
                 </table>
-                <script id="paymentJs" type="x-tmpl-mustache">
-                  {{#paymentArray}}
-                    <tr>
-                      <td>{{ name }}</td>
-                      <td>{{ matric }}</td>
-                      <td>{{ payType }}</td>
-                      <td>{{ amount }} AE</td>
-                    </tr>
-                  {{/paymentArray}}
-                </script>
               </div>
             </div>
           </section>
@@ -222,7 +212,6 @@
     </div>
     <script src="../js/jquery.js"></script>
     <script src="https://unpkg.com/@aeternity/aepp-sdk@6.1.2/dist/aepp-sdk.browser-script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js"></script>
     <script src="../js/payment.js"></script>
     <script src="../js/yii.js"></script>
     <script src="../js/js/respond.min.js"></script>

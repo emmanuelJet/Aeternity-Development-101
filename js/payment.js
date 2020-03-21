@@ -37,30 +37,63 @@ payable contract EKSUPayment =
     state.payments
 `;
 
-function renderPayments() {
-  let paymentJs = $('#paymentJs').html();
-  Mustache.parse(paymentJs);
-  let rendered = Mustache.render(paymentJs, {paymentArray});
-  $('#paymentList').html(rendered);
+function allPayments(name, matric, type, amount){
+  let allPayments=document.getElementById("paymentList");
+
+  let paymentList = document.createElement('tr');
+
+  let nameText=document.createElement("td");
+  nameText.innerText=name;
+
+  let matricText=document.createElement("td");
+  matricText.innerText=matric;
+  
+  let typeText=document.createElement("td");
+  typeText.innerText=type;
+
+  let amountText=document.createElement("td");
+  amountText.innerHTML=amount + "æ";
+
+  paymentList.appendChild(nameText);
+  paymentList.appendChild(matricText);
+  paymentList.appendChild(typeText);
+  paymentList.appendChild(amountText);;
+
+  allPayments.appendChild(paymentList);
 }
 
-window.addEventListener('load', async function() {
+function myPayment(type, amount){
+  let myPayment=document.getElementById("myPayment");
+
+  let paymentList = document.createElement('tr');
+  
+  let typeText=document.createElement("td");
+  typeText.innerText=type;
+
+  let amountText=document.createElement("td");
+  amountText.innerHTML=amount + "æ";
+
+  paymentList.appendChild(typeText);
+  paymentList.appendChild(amountText);;
+
+  myPayment.appendChild(paymentList);
+}
+
+window.addEventListener('load', async () => {
   $("#loader").show();
 
   client = await Ae.Aepp();
   contractInstance = await client.getContractInstance(contractSource,{contractAddress});
 
-  let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
-  console.log('Payment: ', allPayments)
+  // let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
   // allPayments=map(payment=>{
-  //   console.log(payment)
-  //   // paymentArray.push({
-  //   //   name: payment.name,
-  //   //   matric: payment.matric,
-  //   //   payType: payment.payType,
-  //   //   amount: payment.amount,
-  //   // })
+  //   allPayments(payment.name, payment.matric, payment.payType, payment.amount)
   // });
+
+  let myPay=(await contractInstance.methods.userPayment()).decodedResult;
+  myPay=map(payment=>{
+    myPayment(payment.payType, payment.amount)
+  });
 
   renderPayments();
 
