@@ -82,7 +82,7 @@ async function makePayment(event){
   let matric = document.getElementById("paymentMatric").value;
   let payType = document.getElementById("payType").value;
   let amount = document.getElementById("paymentAmount").value;
-  let cryptoAmount = amount * 1000000000000000000;
+  let cryptoAmount = amount * 1000000000000000000n;
 
   if(name.trim()!=""&&matric.trim()!=""&&payType.trim()!=""&&amount.trim()!=""){
     $("#loader").show();
