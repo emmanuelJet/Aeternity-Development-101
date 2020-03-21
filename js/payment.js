@@ -93,8 +93,8 @@ window.addEventListener('load', async () => {
     });
   })
   .catch(function (error) {
-    console.error('Error: ', error.decodedError)
-    document.getElementById("myPayment").innerText = "No Transaction made"
+    console.error(error.decodedError)
+    document.getElementById("paymentList").innerText = "No Transaction made"
     $("#loader").hide();
   })
 
@@ -107,8 +107,8 @@ window.addEventListener('load', async () => {
     });
   })
   .catch(function (error) {
-    console.error('Error: ', error.decodedError)
-    document.getElementById("myPayment").innerText = "No Transaction made"
+    console.error(error.decodedError)
+    document.getElementById("myPayment").innerText = "You have not made a payment"
     $("#loader").hide();
   })
 });
