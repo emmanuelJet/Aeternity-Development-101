@@ -52,12 +52,13 @@ window.addEventListener('load', async () => {
 
   let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
   allPayments=map(payment=>{
-    paymentArray.push({
-      name: payment.name,
-      matric: payment.matric,
-      payType: payment.payType,
-      amount: payment.amount,
-    })
+    console.log(payment)
+    // paymentArray.push({
+    //   name: payment.name,
+    //   matric: payment.matric,
+    //   payType: payment.payType,
+    //   amount: payment.amount,
+    // })
   });
 
   renderPayments();
