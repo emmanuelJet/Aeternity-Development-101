@@ -87,7 +87,8 @@ window.addEventListener('load', async () => {
 
   contractInstance.methods.getPayment()
   .then(function (result) {
-    let allPayments= result.decodedResult;
+    let allPayments= result.decodedResult[1];
+    console.log(allPayments)
     allPayments=map(payment=>{
       allPayments(payment.name, payment.matric, payment.payType, payment.amount)
     });
