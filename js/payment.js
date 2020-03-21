@@ -48,7 +48,7 @@ window.addEventListener('load', async () => {
   $("#loader").show();
 
   client = await Ae.Aepp();
-  contractInstance = await client.getContractInstamce(contractSource,{contractAddress});
+  contractInstance = await client.getContractInstance(contractSource,{contractAddress});
 
   let allPayments=(await contractInstance.methods.getPayment()).decodedResult;
   allPayments=map(payment=>{
