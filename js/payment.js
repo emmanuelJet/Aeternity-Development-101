@@ -6,35 +6,35 @@ const contractAddress = 'ct_2C7qjNqw634pMGpyuLkN4Lf8ZtUVRMssh9Uiq5tLEctgmD65dB';
 const contractSource = `
 payable contract EKSUPayment =
 
-record payment =
-  { studentAddress : address,
-    name           : string,
-    matric         : int,
-    payType        : string,
-    amount         : int }
+  record payment =
+    { studentAddress : address,
+      name           : string,
+      matric         : int,
+      payType        : string,
+      amount         : int }
 
-record state =
-  { payments       : map(address, list(payment)),
-    schoolAddress  : address }
+  record state =
+    { payments       : map(address, list(payment)),
+      schoolAddress  : address }
 
-entrypoint init() =
-  { payments = {},
-    schoolAddress = ak_rLoCtHE3NK9dKyCNonJFYWkEEfeAsDUWa887GsCKqV1rhSuT6 }
+  entrypoint init() =
+    { payments = {},
+      schoolAddress = ak_rLoCtHE3NK9dKyCNonJFYWkEEfeAsDUWa887GsCKqV1rhSuT6 }
 
-payable stateful entrypoint makePayment(name' : string, matric' : int, payType' : string, amount' : int) =
-  let payment = {studentAddress = Call.caller, name = name', matric = matric', payType = payType', amount = amount'}
-  Chain.spend(state.schoolAddress, Call.value)
+  payable stateful entrypoint makePayment(name' : string, matric' : int, payType' : string, amount' : int) =
+    let payment = {studentAddress = Call.caller, name = name', matric = matric', payType = payType', amount = amount'}
+    Chain.spend(state.schoolAddress, Call.value)
 
-  let paymentList = Map.lookup_default(Call.caller, state.payments, [])
-  let newPaymentList = payment::paymentList
+    let paymentList = Map.lookup_default(Call.caller, state.payments, [])
+    let newPaymentList = payment::paymentList
 
-  put(state{payments[Call.caller] = newPaymentList})
+    put(state{payments[Call.caller] = newPaymentList})
 
-entrypoint userPayment() =
-  state.payments[Call.caller]  
+  entrypoint userPayment() =
+    state.payments[Call.caller]  
 
-entrypoint getPayment() =
-  state.payments
+  entrypoint getPayment() =
+    state.payments
 `;
 
 function renderPayments() {
